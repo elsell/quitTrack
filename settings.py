@@ -8,7 +8,7 @@ Jan 2020
 
 Persistance should be added. 
 
-"""
+""" 
 class Settings:
     def __init__(self):
         # Determines which version of the frame is displayed (unprocessed, blurred, etc)

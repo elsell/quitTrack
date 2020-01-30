@@ -3,7 +3,7 @@ elsell
 github.com/elsell
 
 Mosquito Tracker
-Jan 2020
+Jan 2020 
 
 Simple class to facilitate OpenCV
 webcam capture, image processing and 
