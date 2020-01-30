@@ -11,6 +11,9 @@ Persistance should be added.
 """
 class Settings:
     def __init__(self):
+        # Determines which version of the frame is displayed (unprocessed, blurred, etc)
+        self.frameView = 0
+
         self.mainWindowText = "Preview"
         self.controlsWindowText = "Controls"
         self.blurAmount = 25
@@ -37,3 +40,6 @@ class Settings:
 
     def SetUpperThreshold(self, upperThreshold):
         self.upperThreshold = upperThreshold
+
+    def SetFrameView(self, frameView):
+        self.frameView = frameView
