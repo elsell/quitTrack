@@ -9,6 +9,8 @@ Jan 2020
 Persistance should be added. 
 
 """ 
+from guiManager import DetectionArea 
+
 FRAME_VIEW_UNPROCESSED = 0
 FRAME_VIEW_BLURRED     = 1
 FRAME_VIEW_THRESHOLDED = 2
@@ -27,6 +29,8 @@ class Settings:
 
         self.lowerThreshold = 100
         self.upperThreshold = 255
+
+        self.detectionAreas = []
 
     def SetBlurAmount(self, blurAmount):
         if blurAmount % 2 == 0:

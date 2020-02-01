@@ -17,6 +17,7 @@ import cv2
 import imutils
 import sys
 import tkinter as tki
+import time
 from guiManager import GuiManager
 
 class MosquitoTracker:
@@ -26,6 +27,8 @@ class MosquitoTracker:
 
         self.settings = Settings()
         self.frameView = None
+
+        self.renderedFrame = None
 
         self.gui = GuiManager(self)        
 
@@ -43,19 +46,26 @@ class MosquitoTracker:
 
     # Main Capture Loop
     def Capture(self):
-        while self.running:
 
+        while self.running:
             frame = self.CaptureFrame()
 
+            # Iterate through detection areas and find contours
+            self.FindContours(frame)
+            
             self.SelectFrameView()
+            
+            if len(self.settings.detectionAreas) > 0:
+                frame = self.OutlineContours(self.frameView)
 
-            contours = self.FindContours(frame)
+                frame = self.DrawRegionRectangle(self.frameView)
 
-            frame = self.OutlineContours(self.frameView, contours)
+                self.renderedFrame = frame
+            else:
+                self.renderedFrame = self.frameView
+          
+            
 
-            frame = self.DrawRegionRectangle(self.frameView)
-
-            self.frameView = frame
 
         self.gui.Close()
         self.webCam.release()
@@ -90,18 +100,17 @@ class MosquitoTracker:
         contours = cv2.findContours(camFrame, cv2.RETR_LIST, 
             cv2.CHAIN_APPROX_SIMPLE)[-2]
 
-        validContours = []
+        for area in self.settings.detectionAreas:
 
-        for cont in contours:
-            if self.settings.smallestSize < cv2.contourArea(cont) < self.settings.largestSize:
-                M = cv2.moments(cont)
-                cX = int(M["m10"] / M["m00"])
-                cY = int(M["m01"] / M["m00"])
+            area.contours = []
+            for cont in contours:
+                if self.settings.smallestSize < cv2.contourArea(cont) < self.settings.largestSize:
+                    M = cv2.moments(cont)
+                    cX = int(M["m10"] / M["m00"])
+                    cY = int(M["m01"] / M["m00"])
 
-                if self.gui.ax < cX < self.gui.bx and self.gui.ay < cY < self.gui.by:
-                    validContours.append(cont)
-
-        return validContours
+                    if area.ax < cX < area.bx and area.ay < cY < area.by:
+                        area.contours.append(cont)
 
     # Given a list of contours, returns the a list of [x, y] coordinates
     # of the center of each contour
@@ -119,17 +128,22 @@ class MosquitoTracker:
 
     # Given a image frame, a list of contours,
     # outlines contours. Returns the annotated frame.
-    def OutlineContours(self, frame, contours):
-        centerList = self.FindCenters(contours)
+    def OutlineContours(self, frame):
 
-        for cont, center in zip(contours, centerList):
-            cv2.drawContours(frame, cont, -1, (0, 255, 0), 2)
-            cv2.circle(frame, (center[0], center[1]), 30, (150,150,150), 1)
+        for area in self.settings.detectionAreas:
+            centerList = self.FindCenters(area.contours)
+
+            for cont, center in zip(area.contours, centerList):
+                cv2.drawContours(frame, cont, -1, (0, 255, 0), 2)
+                cv2.circle(frame, (center[0], center[1]), 30, (150,150,150), 1)
         
         return frame
 
     def DrawRegionRectangle(self, frame):
-        cv2.rectangle(frame, (self.gui.ax, self.gui.ay), (self.gui.bx,self.gui.by), (0,0,255),6)
+        for area in self.settings.detectionAreas:
+            cv2.rectangle(frame, (area.ax, area.ay), (area.bx,area.by), (0,0,255),6)
+            cv2.putText(frame, area.id,(area.ax + 10, area.ay + 20), cv2.FONT_HERSHEY_SIMPLEX, .5, (0,255,0), 0)
+        
         return frame
 
 
