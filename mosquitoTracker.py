@@ -140,8 +140,22 @@ class MosquitoTracker:
         return frame
 
     def DrawRegionRectangle(self, frame):
+        textScale = 1
+        textThickness = 1
+        textBaseline = 0
+        textFont = cv2.FONT_HERSHEY_PLAIN
+        textBGColor = (0,0,0)
+        textOffsetX = 10
+        textOffsetY = 20
+
         for area in self.settings.detectionAreas:
+            text = area.id
+            (text_width, text_height) = cv2.getTextSize(text, textFont, fontScale=textScale, thickness=textThickness)[0]
+            textBGCoords = ((area.ax + textOffsetX - 2, area.ay + textOffsetY + 2), (area.ax + textOffsetX + text_width, area.ay + textOffsetY - text_height - 2))
+            
+            
             cv2.rectangle(frame, (area.ax, area.ay), (area.bx,area.by), (0,0,255),6)
+            cv2.rectangle(frame, textBGCoords[0], textBGCoords[1], textBGColor, cv2.FILLED)
             cv2.putText(frame, area.id,(area.ax + 10, area.ay + 20), cv2.FONT_HERSHEY_SIMPLEX, .5, (0,255,0), 0)
         
         return frame
