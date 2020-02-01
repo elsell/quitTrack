@@ -10,53 +10,40 @@ webcam capture, image processing and
 contour detection. 
 
 """
-from settings import Settings
+from settings import *
 from PIL import Image
 from PIL import ImageTk
 import cv2
 import imutils
+import sys
 import tkinter as tki
 from guiManager import GuiManager
 
 class MosquitoTracker:
     def __init__(self, webcamId):
+        # Used to quit running when the GUI thread decides 
+        self.running = True
+
         self.settings = Settings()
         self.frameView = None
 
-        self.gui = GuiManager(self)
-        self.InitWindow()
-        
+        self.gui = GuiManager(self)        
 
         self.webCam = cv2.VideoCapture(webcamId)
 
         # TODO: Load Saved Settings Here
 
     def __del__(self):
+        print("Tracker Shutdown")
         try:
             self.webCam.release()
         except:
             pass
-        cv2.destroyAllWindows()
         
 
-    def InitWindow(self):
-        cv2.setMouseCallback(self.settings.mainWindowText,self.gui.MouseRectHandler)
-
-    def ShowFrame(self):
-        cv2.imshow(self.settings.mainWindowText, self.frameView)
-
-
+    # Main Capture Loop
     def Capture(self):
-        cv2.namedWindow(self.settings.mainWindowText)
-        cv2.namedWindow(self.settings.controlsWindowText)
-        self.InitWindow()
-
-        while True:
-            k = cv2.waitKey(1) & 0xFF
-            if k == 27:
-                break       
-
-            self.AddControls()
+        while self.running:
 
             frame = self.CaptureFrame()
 
@@ -68,27 +55,11 @@ class MosquitoTracker:
 
             frame = self.DrawRegionRectangle(self.frameView)
 
-            self.ShowFrame()
-            # if self.panel is None:
-            #     self.panel = tki.Label(self.mainWindow,text=self.settings.mainWindowText)
-            #     self.panel.image = img
-            #     self.panel.pack(side="left", padx = 10, pady = 10)
-            # else:
-            #     self.panel.configure(image=img)
-            #     self.panel.image = img
+            self.frameView = frame
 
-            # self.panel.pack()
-            # self.mainWindow.mainloop()
+        self.gui.Close()
+        self.webCam.release()
 
-        
-
-    def AddControls(self):
-        cv2.createTrackbar('BLUR', "Controls", self.settings.blurAmount, 150, self.settings.SetBlurAmount)
-        cv2.createTrackbar('Smallest', "Controls", self.settings.smallestSize, 200, self.settings.SetSmallestSize)
-        cv2.createTrackbar('Largest', "Controls", self.settings.largestSize, 4000, self.settings.SetLargestSize)
-        cv2.createTrackbar('Lower Threshold', "Controls", self.settings.lowerThreshold, 255, self.settings.SetLowerThreshold)
-        cv2.createTrackbar('Upper Threshold', "Controls", self.settings.upperThreshold, 255, self.settings.SetUpperThreshold)
-        cv2.createTrackbar('Frame View', "Controls", self.settings.frameView, 2, self.settings.SetFrameView)
 
     # Captures and processes a camera frame.
     # returns camFrame
@@ -163,11 +134,11 @@ class MosquitoTracker:
 
 
     def SelectFrameView(self):
-        if self.settings.frameView == 0:
+        if self.settings.frameView == FRAME_VIEW_UNPROCESSED:
             self.frameView = self.camFrame
-        elif self.settings.frameView == 1:
+        elif self.settings.frameView == FRAME_VIEW_BLURRED:
             self.frameView = self.blurredFrame
-        if self.settings.frameView == 2:
+        if self.settings.frameView == FRAME_VIEW_THRESHOLDED:
             self.frameView = self.thresholdFrame 
 
 

@@ -5,7 +5,8 @@ github.com/elsell
 Sample Use for MosquitoTracker Class
 Jan 2020
 """
- 
+import sys
+import threading
 from mosquitoTracker import MosquitoTracker
 
 # Init tracker (using the 2nd webcam input)

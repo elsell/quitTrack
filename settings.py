@@ -9,6 +9,10 @@ Jan 2020
 Persistance should be added. 
 
 """ 
+FRAME_VIEW_UNPROCESSED = 0
+FRAME_VIEW_BLURRED     = 1
+FRAME_VIEW_THRESHOLDED = 2
+
 class Settings:
     def __init__(self):
         # Determines which version of the frame is displayed (unprocessed, blurred, etc)
