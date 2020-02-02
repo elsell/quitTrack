@@ -142,7 +142,6 @@ class MosquitoTracker:
     def DrawRegionRectangle(self, frame):
         textScale = 1
         textThickness = 1
-        textBaseline = 0
         textFont = cv2.FONT_HERSHEY_PLAIN
         textBGColor = (0,0,0)
         textOffsetX = 10
