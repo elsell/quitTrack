@@ -66,6 +66,8 @@ class GuiManager:
 
         # Detection Refinement Tools
         tkinter.Label(self.mainWindow, text="Detection Tools").grid(row=4, column=6, columnspan=6, rowspan=1)
+        
+        # Area Refinement
         tkinter.Label(self.mainWindow, text="Smallest Area").grid(row=5, column=6, columnspan=3, rowspan=1)
         tkinter.Label(self.mainWindow, text="Largest Area").grid(row=5, column=9, columnspan=3, rowspan=1)
         self.smallestAreaScale = tkinter.Scale(self.mainWindow, tickinterval=1500, from_=0, to=3000,command=self.HandleSmallestAreaSlider, orient=tkinter.HORIZONTAL)
@@ -76,6 +78,14 @@ class GuiManager:
         self.largestAreaScale.grid(row=6, column=9, columnspan=3, rowspan=1)
         self.largestAreaScale.set(self.tracker.settings.largestSize)
 
+        # Blur Refinement
+        tkinter.Label(self.mainWindow, text="Blur Amount").grid(row=7, column=6, columnspan=6, rowspan=1)
+        
+        self.blurLevelScale = tkinter.Scale(self.mainWindow, tickinterval=50, from_=0, to=100,command=self.HandleBlurSlider, orient=tkinter.HORIZONTAL)
+        self.blurLevelScale.grid(row=8, column=6, columnspan=6, rowspan=1)
+        self.blurLevelScale.set(self.tracker.settings.blurAmount)
+
+    
         self.UpdatePreviewFrame()
         self.mainWindow.mainloop()
 
@@ -90,6 +100,10 @@ class GuiManager:
             pass
 
         self.previewContainer.after(25, self.UpdatePreviewFrame)
+
+    def HandleBlurSlider(self, value):
+        value = int(value)
+        self.tracker.settings.SetBlurAmount(value)
 
     def HandleSmallestAreaSlider(self, value):
         value = int(value)
