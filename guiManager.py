@@ -53,10 +53,13 @@ class GuiManager:
         # Create Controls for the Right Frame
 
         # View Modes
+        modesVar = tkinter.IntVar()
+        modesVar.set(self.tracker.settings.frameView)
+
         tkinter.Label(self.mainWindow, text="Preview View Mode").grid(row=0, column=6, columnspan=6, rowspan=1)
-        tkinter.Button(self.mainWindow, text = "Unprocessed", command=self.HandleUnprocBtn).grid(row=1, column=6, columnspan=2, rowspan=1)
-        tkinter.Button(self.mainWindow, text = "Blurred", command=self.HandleBlurBtn).grid(row=1, column=8, columnspan=2, rowspan=1)
-        tkinter.Button(self.mainWindow, text = "Thresholded", command=self.HandleThresholdedBtn).grid(row=1, column=10, columnspan=2, rowspan=1)
+        tkinter.Radiobutton(self.mainWindow, value = 0, variable=modesVar, indicatoron=False, text = "Unprocessed", command=self.HandleUnprocBtn).grid(row=1, column=6, columnspan=2, rowspan=1)
+        tkinter.Radiobutton(self.mainWindow, value = 1, variable=modesVar, indicatoron=False, text = "Blurred", command=self.HandleBlurBtn).grid(row=1, column=8, columnspan=2, rowspan=1)
+        tkinter.Radiobutton(self.mainWindow, value = 2, variable=modesVar, indicatoron=False, text = "Thresholded", command=self.HandleThresholdedBtn).grid(row=1, column=10, columnspan=2, rowspan=1)
 
         # Selection Tools
         tkinter.Label(self.mainWindow, text="Selection Tools").grid(row=2, column=6, columnspan=6, rowspan=1)
