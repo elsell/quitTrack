@@ -56,35 +56,38 @@ class GuiManager:
         modesVar = tkinter.IntVar()
         modesVar.set(self.tracker.settings.frameView)
 
-        tkinter.Label(self.mainWindow, text="Preview View Mode").grid(row=0, column=6, columnspan=6, rowspan=1)
-        tkinter.Radiobutton(self.mainWindow, value = 0, variable=modesVar, indicatoron=False, text = "Unprocessed", command=self.HandleUnprocBtn).grid(row=1, column=6, columnspan=2, rowspan=1)
-        tkinter.Radiobutton(self.mainWindow, value = 1, variable=modesVar, indicatoron=False, text = "Blurred", command=self.HandleBlurBtn).grid(row=1, column=8, columnspan=2, rowspan=1)
-        tkinter.Radiobutton(self.mainWindow, value = 2, variable=modesVar, indicatoron=False, text = "Thresholded", command=self.HandleThresholdedBtn).grid(row=1, column=10, columnspan=2, rowspan=1)
+        previewModesFrame = tkinter.LabelFrame(self.mainWindow, text="Preview View Mode")
+        previewModesFrame.grid(padx = 15, pady = 15,row=0, column=6, columnspan=6, rowspan=1,sticky=(tkinter.W+tkinter.E))
+        tkinter.Radiobutton(previewModesFrame, value = 0, variable=modesVar, indicatoron=False, text = "Unprocessed", command=self.HandleUnprocBtn).pack(expand=True, side=tkinter.LEFT,padx=(0,10))
+        tkinter.Radiobutton(previewModesFrame, value = 1, variable=modesVar, indicatoron=False, text = "Blurred", command=self.HandleBlurBtn).pack(expand=True, side=tkinter.LEFT,padx=(0,10))
+        tkinter.Radiobutton(previewModesFrame, value = 2, variable=modesVar, indicatoron=False, text = "Thresholded", command=self.HandleThresholdedBtn).pack(expand=True, side=tkinter.LEFT)
 
         # Selection Tools
-        tkinter.Label(self.mainWindow, text="Selection Tools").grid(row=2, column=6, columnspan=6, rowspan=1)
-        tkinter.Button(self.mainWindow, text = "+ Add Area", command=self.HandleAddAreaBtn).grid(row=3, column=6, columnspan=2, rowspan=1)
-        tkinter.Button(self.mainWindow, text = "- Undo Add Area", command=self.HandleUndoAreaBtn).grid(row=3, column=8, columnspan=2, rowspan=1)
-        tkinter.Button(self.mainWindow, text = "Delete All Areas", command=self.HandleDeleteAreasBtn).grid(row=3, column=10, columnspan=2, rowspan=1)
+        selectionToolsFrame = tkinter.LabelFrame(self.mainWindow, text="Selection Tools")
+        selectionToolsFrame.grid(padx = 15, pady = 15, row=2, column=6, columnspan=6, rowspan=1,sticky=(tkinter.W+tkinter.E))
+        tkinter.Button(selectionToolsFrame, text = "+ Add Area", command=self.HandleAddAreaBtn).pack(expand=True, side=tkinter.LEFT,padx=(0,10))
+        tkinter.Button(selectionToolsFrame, text = "- Undo Add Area", command=self.HandleUndoAreaBtn).pack(expand=True, side=tkinter.LEFT,padx=(0,10))
+        tkinter.Button(selectionToolsFrame, text = "Delete All Areas", command=self.HandleDeleteAreasBtn).pack(expand=True, side=tkinter.LEFT,padx=(0,10))
 
         # Detection Refinement Tools
-        tkinter.Label(self.mainWindow, text="Detection Tools").grid(row=4, column=6, columnspan=6, rowspan=1)
+        detectionToolsFrame = tkinter.LabelFrame(self.mainWindow, text="Detection Tools")
+        detectionToolsFrame.grid(padx = 15, pady = 15,row=4, column=6, columnspan=6, rowspan=1,sticky=(tkinter.W+tkinter.E))
         
         # Area Refinement
-        tkinter.Label(self.mainWindow, text="Smallest Area").grid(row=5, column=6, columnspan=3, rowspan=1)
-        tkinter.Label(self.mainWindow, text="Largest Area").grid(row=5, column=9, columnspan=3, rowspan=1)
-        self.smallestAreaScale = tkinter.Scale(self.mainWindow, tickinterval=1500, from_=0, to=3000,command=self.HandleSmallestAreaSlider, orient=tkinter.HORIZONTAL)
+        tkinter.Label(detectionToolsFrame, text="Smallest Area").grid(row=5, column=6, columnspan=3, rowspan=1)
+        tkinter.Label(detectionToolsFrame, text="Largest Area").grid(row=5, column=9, columnspan=3, rowspan=1)
+        self.smallestAreaScale = tkinter.Scale(detectionToolsFrame, tickinterval=1500, from_=0, to=3000,command=self.HandleSmallestAreaSlider, orient=tkinter.HORIZONTAL)
         self.smallestAreaScale.grid(row=6, column=6, columnspan=3, rowspan=1)
         self.smallestAreaScale.set(self.tracker.settings.smallestSize)
 
-        self.largestAreaScale = tkinter.Scale(self.mainWindow, tickinterval=1500, from_=0, to=3000,command=self.HandleLargestAreaSlider, orient=tkinter.HORIZONTAL)
+        self.largestAreaScale = tkinter.Scale(detectionToolsFrame, tickinterval=1500, from_=0, to=3000,command=self.HandleLargestAreaSlider, orient=tkinter.HORIZONTAL)
         self.largestAreaScale.grid(row=6, column=9, columnspan=3, rowspan=1)
         self.largestAreaScale.set(self.tracker.settings.largestSize)
 
         # Blur Refinement
-        tkinter.Label(self.mainWindow, text="Blur Amount").grid(row=7, column=6, columnspan=6, rowspan=1)
+        tkinter.Label(detectionToolsFrame, text="Blur Amount").grid(row=7, column=6, columnspan=6, rowspan=1)
         
-        self.blurLevelScale = tkinter.Scale(self.mainWindow, tickinterval=50, from_=0, to=100,command=self.HandleBlurSlider, orient=tkinter.HORIZONTAL)
+        self.blurLevelScale = tkinter.Scale(detectionToolsFrame, tickinterval=50, from_=0, to=100,command=self.HandleBlurSlider, orient=tkinter.HORIZONTAL)
         self.blurLevelScale.grid(row=8, column=6, columnspan=6, rowspan=1)
         self.blurLevelScale.set(self.tracker.settings.blurAmount)
 
