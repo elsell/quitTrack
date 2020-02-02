@@ -64,6 +64,17 @@ class GuiManager:
         tkinter.Button(self.mainWindow, text = "- Undo Add Area", command=self.HandleUndoAreaBtn).grid(row=3, column=8, columnspan=2, rowspan=1)
         tkinter.Button(self.mainWindow, text = "Delete All Areas", command=self.HandleDeleteAreasBtn).grid(row=3, column=10, columnspan=2, rowspan=1)
 
+        # Detection Refinement Tools
+        tkinter.Label(self.mainWindow, text="Detection Tools").grid(row=4, column=6, columnspan=6, rowspan=1)
+        tkinter.Label(self.mainWindow, text="Smallest Area").grid(row=5, column=6, columnspan=3, rowspan=1)
+        tkinter.Label(self.mainWindow, text="Largest Area").grid(row=5, column=9, columnspan=3, rowspan=1)
+        self.smallestAreaScale = tkinter.Scale(self.mainWindow, tickinterval=1500, from_=0, to=3000,command=self.HandleSmallestAreaSlider, orient=tkinter.HORIZONTAL)
+        self.smallestAreaScale.grid(row=6, column=6, columnspan=3, rowspan=1)
+        self.smallestAreaScale.set(self.tracker.settings.smallestSize)
+
+        self.largestAreaScale = tkinter.Scale(self.mainWindow, tickinterval=1500, from_=0, to=3000,command=self.HandleLargestAreaSlider, orient=tkinter.HORIZONTAL)
+        self.largestAreaScale.grid(row=6, column=9, columnspan=3, rowspan=1)
+        self.largestAreaScale.set(self.tracker.settings.largestSize)
 
         self.UpdatePreviewFrame()
         self.mainWindow.mainloop()
@@ -79,6 +90,20 @@ class GuiManager:
             pass
 
         self.previewContainer.after(25, self.UpdatePreviewFrame)
+
+    def HandleSmallestAreaSlider(self, value):
+        value = int(value)
+        self.tracker.settings.SetSmallestSize(value)
+
+        if value >= self.tracker.settings.largestSize:
+            self.largestAreaScale.set(value)
+
+    def HandleLargestAreaSlider(self, value):
+        value = int(value)
+        self.tracker.settings.SetLargestSize(value)
+
+        if value <= self.tracker.settings.smallestSize:
+            self.smallestAreaScale.set(value)
 
     def HandleDeleteAreasBtn(self):
         self.tracker.settings.detectionAreas = []

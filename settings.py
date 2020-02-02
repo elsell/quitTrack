@@ -38,7 +38,8 @@ class Settings:
         self.blurAmount = blurAmount
 
     def SetSmallestSize(self, smallestSize):
-        self.smallestSize = smallestSize
+        if smallestSize >= 0:
+            self.smallestSize = smallestSize
 
     def SetLargestSize(self, largestSize):
         self.largestSize = largestSize
